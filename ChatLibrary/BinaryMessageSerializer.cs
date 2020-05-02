@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace ChatLibrary
+namespace ChatServer
 {
     public class BinaryMessageSerializer : IMessageSerializer
     {

@@ -5,7 +5,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChatLibrary
+namespace ChatServer
 {
     [Serializable]
     public class ClientUdpRequestMessage : Message

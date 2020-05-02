@@ -1,6 +1,6 @@
 ﻿namespace ChatClient
 {
-    partial class chatForm
+    partial class MainForm
     {
         /// <summary>
         /// Обязательная переменная конструктора.
@@ -43,6 +43,7 @@
             this.sendButton = new System.Windows.Forms.Button();
             this.dialogsLabel = new System.Windows.Forms.Label();
             this.dialogsListBox = new System.Windows.Forms.ListBox();
+            this.ShowServersButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.colorPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -71,6 +72,7 @@
             this.connectButton.TabIndex = 2;
             this.connectButton.Text = "Подключиться";
             this.connectButton.UseVisualStyleBackColor = true;
+            this.connectButton.Click += new System.EventHandler(this.connectButton_Click);
             // 
             // colorLabel
             // 
@@ -169,11 +171,22 @@
             this.dialogsListBox.Size = new System.Drawing.Size(143, 173);
             this.dialogsListBox.TabIndex = 13;
             // 
-            // chatForm
+            // ShowServersButton
+            // 
+            this.ShowServersButton.Location = new System.Drawing.Point(147, 41);
+            this.ShowServersButton.Name = "ShowServersButton";
+            this.ShowServersButton.Size = new System.Drawing.Size(178, 23);
+            this.ShowServersButton.TabIndex = 14;
+            this.ShowServersButton.Text = "Показать доступные сервера";
+            this.ShowServersButton.UseVisualStyleBackColor = true;
+            this.ShowServersButton.Click += new System.EventHandler(this.ShowServersButton_Click);
+            // 
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 327);
+            this.Controls.Add(this.ShowServersButton);
             this.Controls.Add(this.dialogsListBox);
             this.Controls.Add(this.dialogsLabel);
             this.Controls.Add(this.sendButton);
@@ -188,7 +201,7 @@
             this.Controls.Add(this.connectButton);
             this.Controls.Add(this.nicknameLabel);
             this.Controls.Add(this.nicknameTextBox);
-            this.Name = "chatForm";
+            this.Name = "MainForm";
             this.Text = "Чат";
             ((System.ComponentModel.ISupportInitialize)(this.colorPictureBox)).EndInit();
             this.ResumeLayout(false);
@@ -206,13 +219,14 @@
         private System.Windows.Forms.ColorDialog colorDialog;
         private System.Windows.Forms.Label ipLabel;
         private System.Windows.Forms.Label serverListLabel;
-        private System.Windows.Forms.ListBox serversListBox;
+        public System.Windows.Forms.ListBox serversListBox;
         private System.Windows.Forms.TextBox chatTextBox;
         private System.Windows.Forms.Label currentDialogLabel;
         private System.Windows.Forms.TextBox messageTextBox;
         private System.Windows.Forms.Button sendButton;
         private System.Windows.Forms.Label dialogsLabel;
         private System.Windows.Forms.ListBox dialogsListBox;
+        private System.Windows.Forms.Button ShowServersButton;
     }
 }
 

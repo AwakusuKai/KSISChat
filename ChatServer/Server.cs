@@ -1,4 +1,4 @@
-﻿using ChatLibrary;
+﻿using ChatServer;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,19 +11,23 @@ namespace ChatServer
 {
     public class Server
     {
-        private const int serverPort = 49001;
+        private const int serverPort = 50000;
         private string serverName;
+        private const int ClientsLimit = 10;
         private Socket udpSocket;
+        private Socket tcpSocket;
+        private Thread tcpListenThread;
         private Thread udpListenThread;
         private IMessageSerializer messageSerializer;
+        private List<ConnectedClient> clientsList;
 
         public Server(IMessageSerializer messageSerializer)
         {
             this.messageSerializer = messageSerializer;
-            //clients = new List<ClientHandler>();
+            clientsList = new List<ConnectedClient>();
             //messageHistory = new List<Message>();
             udpListenThread = new Thread(ListenUDP);
-            //listenTcpThread = new Thread(ListenTcp);
+            tcpListenThread = new Thread(ListenTCP);
         }
 
         public void Start()
@@ -34,7 +38,7 @@ namespace ChatServer
             {
                 Console.WriteLine("Server is ready!");
                 udpListenThread.Start();
-                //listenTcpThread.Start();
+                tcpListenThread.Start();
             }
         }
 
@@ -42,13 +46,13 @@ namespace ChatServer
         {
             udpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             udpSocket.EnableBroadcast = true;
-            //tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             IPEndPoint localUdpIp = new IPEndPoint(IPAddress.Any, serverPort);
-            //IPEndPoint localTcpIp = new IPEndPoint(CommonFunctions.GetCurrrentHostIp(), ServerPort);
+            IPEndPoint localTcpIp = new IPEndPoint(NetworkInformation.GetCurrrentHostIp(), serverPort);
             try
             {
                 udpSocket.Bind(localUdpIp);
-                //tcpSocket.Bind(localTcpIp);
+                tcpSocket.Bind(localTcpIp);
                 return true;
             }
             catch (Exception exception)
@@ -81,13 +85,50 @@ namespace ChatServer
             }
         }
 
+        public void ListenTCP()
+        {
+            int receivedDataBytesCount;
+            byte[] receivedDataBuffer;
+            tcpSocket.Listen(ClientsLimit);
+            while (true)
+            {
+                try
+                {
+                    Socket connectedSocket = tcpSocket.Accept();
+                    receivedDataBuffer = new byte[1024];
+                    using (MemoryStream memoryStream = new MemoryStream())
+                    {
+                        do
+                        {
+                            receivedDataBytesCount = connectedSocket.Receive(receivedDataBuffer, receivedDataBuffer.Length, SocketFlags.None);
+                            memoryStream.Write(receivedDataBuffer, 0, receivedDataBytesCount);
+                        }
+                        while (udpSocket.Available > 0);
+                        if (receivedDataBytesCount > 0)
+                            HandleReceivedMessage(messageSerializer.Deserialize(memoryStream.ToArray()));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+            }
+        }
+
         public void HandleReceivedMessage(Message message) //обработчик сообщений
         {
             if (message is ClientUdpRequestMessage)
             {
                 ClientUdpRequestMessage clientUdpRequestMessage = (ClientUdpRequestMessage)message;
                 HandleClientUdpRequestMessage(clientUdpRequestMessage);
-            } 
+            }
+
+            if (message is ConnectionMessage)
+            {
+                ConnectionMessage ConnectionMessage = (ConnectionMessage)message;
+                clientsList.Add(new ConnectedClient(ConnectionMessage.ClientNickname, clientsList.Count));
+                Console.WriteLine("[" + DateTime.Now.ToString() + "]: Пользователь " + ConnectionMessage.ClientNickname + "присоединился.");
+            }
         }
 
         private void HandleClientUdpRequestMessage(ClientUdpRequestMessage clientUdpRequestMessage)
@@ -96,7 +137,6 @@ namespace ChatServer
             IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Parse(clientUdpRequestMessage.SenderIp), clientUdpRequestMessage.SenderPort);
             Socket serverUdpAnswerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             serverUdpAnswerSocket.SendTo(messageSerializer.Serialize(serverUdpAnswerMessage), clientEndPoint);
-            Console.WriteLine("Сообщение получено");
         }
 
         
