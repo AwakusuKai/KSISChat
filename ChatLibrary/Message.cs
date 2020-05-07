@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 
-namespace ChatServer
+namespace ChatLibrary
 {
     [Serializable]
     public abstract class Message

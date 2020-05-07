@@ -152,6 +152,7 @@
             this.sendButton.TabIndex = 11;
             this.sendButton.Text = "Отправить";
             this.sendButton.UseVisualStyleBackColor = true;
+            this.sendButton.Click += new System.EventHandler(this.sendButton_Click);
             // 
             // dialogsLabel
             // 
@@ -222,10 +223,10 @@
         public System.Windows.Forms.ListBox serversListBox;
         private System.Windows.Forms.TextBox chatTextBox;
         private System.Windows.Forms.Label currentDialogLabel;
-        private System.Windows.Forms.TextBox messageTextBox;
+        public System.Windows.Forms.TextBox messageTextBox;
         private System.Windows.Forms.Button sendButton;
         private System.Windows.Forms.Label dialogsLabel;
-        private System.Windows.Forms.ListBox dialogsListBox;
+        public System.Windows.Forms.ListBox dialogsListBox;
         private System.Windows.Forms.Button ShowServersButton;
     }
 }

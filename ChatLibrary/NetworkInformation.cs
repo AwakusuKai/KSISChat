@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text;
 
-namespace ChatServer
+namespace ChatLibrary
 {
     public class NetworkInformation
     {

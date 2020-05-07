@@ -1,4 +1,4 @@
-﻿using ChatServer;
+﻿using ChatLibrary;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,21 +10,26 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Message = ChatServer.Message;
+using Message = ChatLibrary.Message;
 
 namespace ChatClient
 {
+    public delegate void UpdateClientsList(ClientsListUpdateMessage message);
+    public delegate void ShowMessage(CommonMessage commonMessage);
 
     class Client
     {
         private const int ServerPort = 50000;
-        public int id;
+        //public int id;
         private Socket tcpSocket;
         private Socket udpSocket;
         private Thread udpListenThread;
         private Thread listenTcpThread;
         private IMessageSerializer messageSerializer;
         public List<ServerInformation> serversInfo;
+        public event UpdateClientsList UpdateClientsListEvent;
+        public event ShowMessage ShowMessageEvent;
+        public string Nickname;
 
         public Client(IMessageSerializer messageSerializer)
         {
@@ -118,6 +123,25 @@ namespace ChatClient
             {
                 AddServerInformation((ServerUdpAnswerMessage)message);
             }
+
+            if (message is ClientsListUpdateMessage)
+            {
+                UpdateClientsList((ClientsListUpdateMessage)message);
+            }
+            if (message is CommonMessage)
+            {
+                ShowMessage((CommonMessage)message);
+            }
+        }
+
+        public void ShowMessage(CommonMessage message)
+        {
+            ShowMessageEvent(message);
+        }
+
+        public void UpdateClientsList(ClientsListUpdateMessage message)
+        {
+            UpdateClientsListEvent(message);
         }
 
         public void ConnectToServer(int serverIndex, string clientName)
@@ -129,6 +153,13 @@ namespace ChatClient
                 listenTcpThread.Start();
                 SendMessage(GetConnectionMessage(clientName));
             }
+        }
+
+        public void SendCommonMessage(string messageText)
+        {
+            IPEndPoint clientIp = (IPEndPoint)(tcpSocket.LocalEndPoint);
+            CommonMessage commonMessage = new CommonMessage(DateTime.Now, clientIp.Address.ToString(), clientIp.Port, messageText, Nickname);
+            SendMessage(commonMessage);
         }
 
         public void SendMessage(Message message)
