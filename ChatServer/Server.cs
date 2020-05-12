@@ -21,6 +21,7 @@ namespace ChatServer
         private IMessageSerializer messageSerializer;
         private List<ConnectedClient> clientsList;
         private List<ChatPartisipant> chatPartisipants;
+        private int clientID = 0;
 
         public Server(IMessageSerializer messageSerializer)
         {
@@ -126,11 +127,25 @@ namespace ChatServer
                 HandleClientUdpRequestMessage(clientUdpRequestMessage);
             }
 
-            else if (message is CommonMessage)
+            if (message is CommonMessage)
             {
-                //Console.WriteLine("Сообщение получено!");
                 CommonMessage commonMessage = (CommonMessage)message;
                 SendMessageToAllClients(commonMessage);
+            }
+
+            if (message is PrivateMessage)
+            {
+                PrivateMessage privateMessage = (PrivateMessage)message;
+                SendMessageToClient(privateMessage, privateMessage.recipientID);
+            }
+        }
+
+        public void SendMessageToClient(Message message, int id)
+        {
+            foreach (ConnectedClient connectedClient in clientsList)
+            {
+                if(connectedClient.id == id)
+                    connectedClient.tcpSocket.Send(messageSerializer.Serialize(message));
             }
         }
 
@@ -139,11 +154,12 @@ namespace ChatServer
             if (message is ConnectionMessage)
             {
                 ConnectionMessage ConnectionMessage = (ConnectionMessage)message;
-                ConnectedClient connectedClient = new ConnectedClient(ConnectionMessage.ClientNickname, clientsList.Count, connectedSocket, messageSerializer);
+                int clientID = GetClientID();
+                ConnectedClient connectedClient = new ConnectedClient(ConnectionMessage.ClientNickname, clientID, connectedSocket, messageSerializer);
                 connectedClient.ReceiveMessageEvent += HandleReceivedMessage;
                 clientsList.Add(connectedClient);
                 connectedClient.StartListenTcp();
-                chatPartisipants.Add(new ChatPartisipant(ConnectionMessage.ClientNickname, chatPartisipants.Count));
+                chatPartisipants.Add(new ChatPartisipant(ConnectionMessage.ClientNickname, clientID));
                 Console.WriteLine("[" + DateTime.Now.ToString() + "]: Пользователь " + ConnectionMessage.ClientNickname + " присоединился.");
                 string text = "Пользователь " + ConnectionMessage.ClientNickname + " присоединился.";
                 SendMessageToAllClients(new ClientsListUpdateMessage(DateTime.Now, NetworkInformation.GetCurrrentHostIp().ToString(), serverPort, text, chatPartisipants));
@@ -164,6 +180,11 @@ namespace ChatServer
             {  
                 connectedClient.tcpSocket.Send(messageSerializer.Serialize(message));
             }
+        }
+
+        int GetClientID()
+        {
+            return clientID++;
         }
 
         

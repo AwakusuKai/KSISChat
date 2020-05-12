@@ -15,5 +15,7 @@ namespace ChatLibrary
             this.nickname = nickname;
             this.id = id;
         }
+
+        public override string ToString() { return nickname; }
     }
 }

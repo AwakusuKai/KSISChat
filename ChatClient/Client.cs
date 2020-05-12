@@ -16,6 +16,7 @@ namespace ChatClient
 {
     public delegate void UpdateClientsList(ClientsListUpdateMessage message);
     public delegate void ShowMessage(CommonMessage commonMessage);
+    public delegate void ShowPrivateMessage(PrivateMessage privateMessage);
 
     class Client
     {
@@ -29,13 +30,15 @@ namespace ChatClient
         public List<ServerInformation> serversInfo;
         public event UpdateClientsList UpdateClientsListEvent;
         public event ShowMessage ShowMessageEvent;
+        public event ShowPrivateMessage ShowPrivateMessageEvent;
         public string Nickname;
+        public List<ChatPartisipant> partisipants;
 
         public Client(IMessageSerializer messageSerializer)
         {
             this.messageSerializer = messageSerializer;
             serversInfo = new List<ServerInformation>();
-            //participants = new List<ChatParticipant>();
+            //participants = new List<ChatPartisipant>();
             tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             udpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             udpSocket.EnableBroadcast = true;
@@ -132,6 +135,10 @@ namespace ChatClient
             {
                 ShowMessage((CommonMessage)message);
             }
+            if (message is PrivateMessage)
+            {
+                ShowPrivateMessage((PrivateMessage)message);
+            }
         }
 
         public void ShowMessage(CommonMessage message)
@@ -139,9 +146,15 @@ namespace ChatClient
             ShowMessageEvent(message);
         }
 
+        public void ShowPrivateMessage(PrivateMessage message)
+        {
+            ShowPrivateMessageEvent(message);
+        }
+
         public void UpdateClientsList(ClientsListUpdateMessage message)
         {
             UpdateClientsListEvent(message);
+            partisipants = message.ClientsList;
         }
 
         public void ConnectToServer(int serverIndex, string clientName)
@@ -160,6 +173,13 @@ namespace ChatClient
             IPEndPoint clientIp = (IPEndPoint)(tcpSocket.LocalEndPoint);
             CommonMessage commonMessage = new CommonMessage(DateTime.Now, clientIp.Address.ToString(), clientIp.Port, messageText, Nickname);
             SendMessage(commonMessage);
+        }
+
+        public void SendPrivateMessage(string messageText, int recipientID)
+        {
+            IPEndPoint clientIp = (IPEndPoint)(tcpSocket.LocalEndPoint);
+            PrivateMessage privateMessage = new PrivateMessage(DateTime.Now, clientIp.Address.ToString(), clientIp.Port, messageText, Nickname, recipientID);
+            SendMessage(privateMessage);
         }
 
         public void SendMessage(Message message)

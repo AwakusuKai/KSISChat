@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.nicknameTextBox = new System.Windows.Forms.TextBox();
             this.nicknameLabel = new System.Windows.Forms.Label();
             this.connectButton = new System.Windows.Forms.Button();
@@ -43,8 +44,11 @@
             this.sendButton = new System.Windows.Forms.Button();
             this.dialogsLabel = new System.Windows.Forms.Label();
             this.dialogsListBox = new System.Windows.Forms.ListBox();
+            this.chatPartisipantBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.ShowServersButton = new System.Windows.Forms.Button();
+            this.sendPrivateMessageButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.colorPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chatPartisipantBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // nicknameTextBox
@@ -172,6 +176,10 @@
             this.dialogsListBox.Size = new System.Drawing.Size(143, 173);
             this.dialogsListBox.TabIndex = 13;
             // 
+            // chatPartisipantBindingSource
+            // 
+            this.chatPartisipantBindingSource.DataSource = typeof(ChatLibrary.ChatPartisipant);
+            // 
             // ShowServersButton
             // 
             this.ShowServersButton.Location = new System.Drawing.Point(147, 41);
@@ -182,11 +190,22 @@
             this.ShowServersButton.UseVisualStyleBackColor = true;
             this.ShowServersButton.Click += new System.EventHandler(this.ShowServersButton_Click);
             // 
+            // sendPrivateMessageButton
+            // 
+            this.sendPrivateMessageButton.Location = new System.Drawing.Point(725, 78);
+            this.sendPrivateMessageButton.Name = "sendPrivateMessageButton";
+            this.sendPrivateMessageButton.Size = new System.Drawing.Size(93, 23);
+            this.sendPrivateMessageButton.TabIndex = 15;
+            this.sendPrivateMessageButton.Text = "Отправить ЛС";
+            this.sendPrivateMessageButton.UseVisualStyleBackColor = true;
+            this.sendPrivateMessageButton.Click += new System.EventHandler(this.sendPrivateMessageButton_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 327);
+            this.ClientSize = new System.Drawing.Size(830, 327);
+            this.Controls.Add(this.sendPrivateMessageButton);
             this.Controls.Add(this.ShowServersButton);
             this.Controls.Add(this.dialogsListBox);
             this.Controls.Add(this.dialogsLabel);
@@ -205,6 +224,7 @@
             this.Name = "MainForm";
             this.Text = "Чат";
             ((System.ComponentModel.ISupportInitialize)(this.colorPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chatPartisipantBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -228,6 +248,8 @@
         private System.Windows.Forms.Label dialogsLabel;
         public System.Windows.Forms.ListBox dialogsListBox;
         private System.Windows.Forms.Button ShowServersButton;
+        private System.Windows.Forms.Button sendPrivateMessageButton;
+        private System.Windows.Forms.BindingSource chatPartisipantBindingSource;
     }
 }
 
