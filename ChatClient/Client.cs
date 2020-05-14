@@ -17,11 +17,11 @@ namespace ChatClient
     public delegate void UpdateClientsList(ClientsListUpdateMessage message);
     public delegate void ShowMessage(CommonMessage commonMessage);
     public delegate void ShowPrivateMessage(PrivateMessage privateMessage);
-
+    public delegate void ShowServerInformation(List<ServerInformation> servers);
+    public delegate void ShowMessagesHistory(HistoryMessage message);
     class Client
     {
         private const int ServerPort = 50000;
-        //public int id;
         private Socket tcpSocket;
         private Socket udpSocket;
         private Thread udpListenThread;
@@ -31,6 +31,8 @@ namespace ChatClient
         public event UpdateClientsList UpdateClientsListEvent;
         public event ShowMessage ShowMessageEvent;
         public event ShowPrivateMessage ShowPrivateMessageEvent;
+        public event ShowServerInformation ShowServerInformationEvent;
+        public event ShowMessagesHistory ShowMessagesHistoryEvent;
         public string Nickname;
         public List<ChatPartisipant> partisipants;
 
@@ -38,7 +40,6 @@ namespace ChatClient
         {
             this.messageSerializer = messageSerializer;
             serversInfo = new List<ServerInformation>();
-            //participants = new List<ChatPartisipant>();
             tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             udpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             udpSocket.EnableBroadcast = true;
@@ -118,6 +119,8 @@ namespace ChatClient
         {
             ServerInformation currentServer = new ServerInformation(serverUdpAnswerMessage.SenderIp, serverUdpAnswerMessage.ServerName, serverUdpAnswerMessage.SenderPort);
             serversInfo.Add(currentServer);
+            ShowServerInformationEvent(serversInfo);
+
         }
 
         public void HandleReceivedMessage(Message message)
@@ -139,6 +142,15 @@ namespace ChatClient
             {
                 ShowPrivateMessage((PrivateMessage)message);
             }
+            if (message is HistoryMessage)
+            {
+                ShowMessagesHistory((HistoryMessage)message);
+            }
+        }
+
+        public void ShowMessagesHistory(HistoryMessage message)
+        {
+            ShowMessagesHistoryEvent(message);
         }
 
         public void ShowMessage(CommonMessage message)
@@ -157,15 +169,13 @@ namespace ChatClient
             partisipants = message.ClientsList;
         }
 
-        public void ConnectToServer(int serverIndex, string clientName)
+        public void ConnectToServer(string serverIP, int serverPort, string clientName)
         {
-            if ((serverIndex >= 0) && (serverIndex <= serversInfo.Count - 1))
-            {
-                IPEndPoint serverIPEndPoint = new IPEndPoint(IPAddress.Parse(serversInfo[serverIndex].ServerIP), serversInfo[serverIndex].ServerPort);
+
+                IPEndPoint serverIPEndPoint = new IPEndPoint(IPAddress.Parse(serverIP), serverPort);
                 tcpSocket.Connect(serverIPEndPoint);
                 listenTcpThread.Start();
                 SendMessage(GetConnectionMessage(clientName));
-            }
         }
 
         public void SendCommonMessage(string messageText)

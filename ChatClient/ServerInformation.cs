@@ -18,5 +18,6 @@ namespace ChatClient
             ServerName = serverName;
             ServerPort = serverPort;
         }
+        public override string ToString() { return ServerName; }
     }
 }

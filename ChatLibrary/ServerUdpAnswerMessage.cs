@@ -11,6 +11,7 @@ namespace ChatLibrary
     public class ServerUdpAnswerMessage : Message
     {
         public string ServerName { get; }
+        public List<CommonMessage> messagesHistory;
         public ServerUdpAnswerMessage(DateTime dateTime, string serverIp, int serverPort, string serverName) : base(dateTime, serverIp, serverPort)
         {
             ServerName = serverName;

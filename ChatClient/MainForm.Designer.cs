@@ -120,15 +120,16 @@
             this.serversListBox.FormattingEnabled = true;
             this.serversListBox.Location = new System.Drawing.Point(16, 110);
             this.serversListBox.Name = "serversListBox";
-            this.serversListBox.Size = new System.Drawing.Size(222, 212);
+            this.serversListBox.Size = new System.Drawing.Size(106, 212);
             this.serversListBox.TabIndex = 7;
             // 
             // chatTextBox
             // 
-            this.chatTextBox.Location = new System.Drawing.Point(297, 148);
+            this.chatTextBox.Location = new System.Drawing.Point(244, 139);
             this.chatTextBox.Multiline = true;
             this.chatTextBox.Name = "chatTextBox";
-            this.chatTextBox.Size = new System.Drawing.Size(326, 174);
+            this.chatTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.chatTextBox.Size = new System.Drawing.Size(425, 183);
             this.chatTextBox.TabIndex = 8;
             // 
             // currentDialogLabel
@@ -143,16 +144,16 @@
             // 
             // messageTextBox
             // 
-            this.messageTextBox.Location = new System.Drawing.Point(297, 80);
+            this.messageTextBox.Location = new System.Drawing.Point(244, 80);
             this.messageTextBox.Name = "messageTextBox";
             this.messageTextBox.Size = new System.Drawing.Size(326, 20);
             this.messageTextBox.TabIndex = 10;
             // 
             // sendButton
             // 
-            this.sendButton.Location = new System.Drawing.Point(629, 78);
+            this.sendButton.Location = new System.Drawing.Point(576, 76);
             this.sendButton.Name = "sendButton";
-            this.sendButton.Size = new System.Drawing.Size(90, 22);
+            this.sendButton.Size = new System.Drawing.Size(93, 22);
             this.sendButton.TabIndex = 11;
             this.sendButton.Text = "Отправить";
             this.sendButton.UseVisualStyleBackColor = true;
@@ -162,16 +163,16 @@
             // 
             this.dialogsLabel.AutoSize = true;
             this.dialogsLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.dialogsLabel.Location = new System.Drawing.Point(641, 116);
+            this.dialogsLabel.Location = new System.Drawing.Point(695, 104);
             this.dialogsLabel.Name = "dialogsLabel";
-            this.dialogsLabel.Size = new System.Drawing.Size(82, 20);
+            this.dialogsLabel.Size = new System.Drawing.Size(137, 20);
             this.dialogsLabel.TabIndex = 12;
-            this.dialogsLabel.Text = "Диалоги: ";
+            this.dialogsLabel.Text = "Участники чата: ";
             // 
             // dialogsListBox
             // 
             this.dialogsListBox.FormattingEnabled = true;
-            this.dialogsListBox.Location = new System.Drawing.Point(645, 148);
+            this.dialogsListBox.Location = new System.Drawing.Point(689, 149);
             this.dialogsListBox.Name = "dialogsListBox";
             this.dialogsListBox.Size = new System.Drawing.Size(143, 173);
             this.dialogsListBox.TabIndex = 13;
@@ -192,7 +193,7 @@
             // 
             // sendPrivateMessageButton
             // 
-            this.sendPrivateMessageButton.Location = new System.Drawing.Point(725, 78);
+            this.sendPrivateMessageButton.Location = new System.Drawing.Point(576, 104);
             this.sendPrivateMessageButton.Name = "sendPrivateMessageButton";
             this.sendPrivateMessageButton.Size = new System.Drawing.Size(93, 23);
             this.sendPrivateMessageButton.TabIndex = 15;
@@ -204,7 +205,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(830, 327);
+            this.ClientSize = new System.Drawing.Size(848, 327);
             this.Controls.Add(this.sendPrivateMessageButton);
             this.Controls.Add(this.ShowServersButton);
             this.Controls.Add(this.dialogsListBox);

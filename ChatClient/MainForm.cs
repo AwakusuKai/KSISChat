@@ -22,8 +22,50 @@ namespace ChatClient
             client.UpdateClientsListEvent += UpdateDialogsList;
             client.ShowMessageEvent += ShowMessageOnTextBox;
             client.ShowPrivateMessageEvent += ShowPrivateMessageOnTextBox;
+            client.ShowServerInformationEvent += AddNewServer;
+            client.ShowMessagesHistoryEvent += ShowMessagesHistoryOnTextBox;
             client.SearchServers();
             
+        }
+
+        public void ShowMessagesHistoryOnTextBox(HistoryMessage historyMessage)
+        {
+            System.Action action = delegate
+            {
+                foreach (CommonMessage commonMessage in historyMessage.MessageHistory)
+                {
+                    chatTextBox.Text += Environment.NewLine + commonMessage.SendTime.ToString("h:mm tt") + " " + commonMessage.SenderNickname + ": " + commonMessage.MessageText;
+                }
+};
+            if (InvokeRequired)
+            {
+                Invoke(action);
+            }
+            else
+            {
+                action();
+            }
+        }
+
+        public void AddNewServer(List<ServerInformation> servers)
+        { 
+            System.Action action = delegate
+            {
+                serversListBox.Items.Clear();
+
+                foreach (ServerInformation server in servers)
+                {
+                    serversListBox.Items.Add(server);
+                }
+            };
+            if (InvokeRequired)
+            {
+                Invoke(action);
+            }
+            else
+            {
+                action();
+            }
         }
 
         public void ShowMessageOnTextBox(CommonMessage message)
@@ -90,13 +132,15 @@ namespace ChatClient
             {
                 serversListBox.Items.Add(serverInformation.ServerName);
             }
+            //не работает исправить
         }
 
         private void connectButton_Click(object sender, System.EventArgs e)
         {
-            if(nicknameTextBox.Text != "")
+            if((nicknameTextBox.Text != "") && (serversListBox.SelectedItems.Count == 1))
             {
-                client.ConnectToServer(serversListBox.SelectedIndex, nicknameTextBox.Text);
+                ServerInformation server = (ServerInformation)serversListBox.Items[serversListBox.SelectedIndex];
+                client.ConnectToServer(server.ServerIP, server.ServerPort, nicknameTextBox.Text);
                 client.Nickname = nicknameTextBox.Text;
             }
         }

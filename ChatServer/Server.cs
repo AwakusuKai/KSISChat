@@ -22,14 +22,14 @@ namespace ChatServer
         private List<ConnectedClient> clientsList;
         private List<ChatPartisipant> chatPartisipants;
         private int clientID = 0;
+        private List<CommonMessage> messagesHistory;
 
         public Server(IMessageSerializer messageSerializer)
         {
             this.messageSerializer = messageSerializer;
             clientsList = new List<ConnectedClient>();
             chatPartisipants = new List<ChatPartisipant>();
-
-            //messageHistory = new List<Message>();
+            messagesHistory = new List<CommonMessage>();
             udpListenThread = new Thread(ListenUDP);
             tcpListenThread = new Thread(ListenTCP);
         }
@@ -130,6 +130,7 @@ namespace ChatServer
             if (message is CommonMessage)
             {
                 CommonMessage commonMessage = (CommonMessage)message;
+                messagesHistory.Add(commonMessage);
                 SendMessageToAllClients(commonMessage);
             }
 
@@ -162,7 +163,10 @@ namespace ChatServer
                 chatPartisipants.Add(new ChatPartisipant(ConnectionMessage.ClientNickname, clientID));
                 Console.WriteLine("[" + DateTime.Now.ToString() + "]: Пользователь " + ConnectionMessage.ClientNickname + " присоединился.");
                 string text = "Пользователь " + ConnectionMessage.ClientNickname + " присоединился.";
+                HistoryMessage historyMessage = new HistoryMessage(DateTime.Now, NetworkInformation.GetCurrrentHostIp().ToString(), serverPort, messagesHistory);
+                connectedClient.tcpSocket.Send(messageSerializer.Serialize(historyMessage));
                 SendMessageToAllClients(new ClientsListUpdateMessage(DateTime.Now, NetworkInformation.GetCurrrentHostIp().ToString(), serverPort, text, chatPartisipants));
+                
             }  
         }
 
