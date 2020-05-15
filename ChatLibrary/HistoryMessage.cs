@@ -8,10 +8,11 @@ namespace ChatLibrary
     public class HistoryMessage : Message
     {
         public List<CommonMessage> MessageHistory;
-
-        public HistoryMessage(DateTime dateTime, string clientIp, int clientPort, List<CommonMessage> messageHistory) : base(dateTime, clientIp, clientPort)
+        public int ClientID;
+        public HistoryMessage(DateTime dateTime, string clientIp, int clientPort, List<CommonMessage> messageHistory, int clientID) : base(dateTime, clientIp, clientPort)
         {
             MessageHistory = messageHistory;
+            ClientID = clientID;
         }
     }
 }

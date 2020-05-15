@@ -157,5 +157,15 @@ namespace ChatClient
             client.SendPrivateMessage(messageTextBox.Text, recipient.id);
             messageTextBox.Clear();
         }
+
+        private void disconnectButton_Click(object sender, EventArgs e)
+        {
+            client.DisconnectFromServer();
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            client.DisconnectFromServer();
+        }
     }
 }

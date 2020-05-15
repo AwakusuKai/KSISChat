@@ -35,6 +35,7 @@ namespace ChatClient
         public event ShowMessagesHistory ShowMessagesHistoryEvent;
         public string Nickname;
         public List<ChatPartisipant> partisipants;
+        public int clientID;
 
         public Client(IMessageSerializer messageSerializer)
         {
@@ -150,6 +151,7 @@ namespace ChatClient
 
         public void ShowMessagesHistory(HistoryMessage message)
         {
+            clientID = message.ClientID;
             ShowMessagesHistoryEvent(message);
         }
 
@@ -167,6 +169,13 @@ namespace ChatClient
         {
             UpdateClientsListEvent(message);
             partisipants = message.ClientsList;
+        }
+
+        public void DisconnectFromServer()
+        {
+            IPEndPoint clientIp = (IPEndPoint)(tcpSocket.LocalEndPoint);
+            DisconnectionMessage disconnectionMessage = new DisconnectionMessage(DateTime.Now, clientIp.Address.ToString(), clientIp.Port, clientID);
+            SendMessage(disconnectionMessage);   
         }
 
         public void ConnectToServer(string serverIP, int serverPort, string clientName)

@@ -39,14 +39,13 @@
             this.serverListLabel = new System.Windows.Forms.Label();
             this.serversListBox = new System.Windows.Forms.ListBox();
             this.chatTextBox = new System.Windows.Forms.TextBox();
-            this.currentDialogLabel = new System.Windows.Forms.Label();
             this.messageTextBox = new System.Windows.Forms.TextBox();
             this.sendButton = new System.Windows.Forms.Button();
             this.dialogsLabel = new System.Windows.Forms.Label();
             this.dialogsListBox = new System.Windows.Forms.ListBox();
-            this.chatPartisipantBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.ShowServersButton = new System.Windows.Forms.Button();
             this.sendPrivateMessageButton = new System.Windows.Forms.Button();
+            this.chatPartisipantBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.colorPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chatPartisipantBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -132,16 +131,6 @@
             this.chatTextBox.Size = new System.Drawing.Size(425, 183);
             this.chatTextBox.TabIndex = 8;
             // 
-            // currentDialogLabel
-            // 
-            this.currentDialogLabel.AutoSize = true;
-            this.currentDialogLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.currentDialogLabel.Location = new System.Drawing.Point(293, 116);
-            this.currentDialogLabel.Name = "currentDialogLabel";
-            this.currentDialogLabel.Size = new System.Drawing.Size(136, 20);
-            this.currentDialogLabel.TabIndex = 9;
-            this.currentDialogLabel.Text = "Текущий диалог:";
-            // 
             // messageTextBox
             // 
             this.messageTextBox.Location = new System.Drawing.Point(244, 80);
@@ -174,12 +163,9 @@
             this.dialogsListBox.FormattingEnabled = true;
             this.dialogsListBox.Location = new System.Drawing.Point(689, 149);
             this.dialogsListBox.Name = "dialogsListBox";
+            this.dialogsListBox.ScrollAlwaysVisible = true;
             this.dialogsListBox.Size = new System.Drawing.Size(143, 173);
             this.dialogsListBox.TabIndex = 13;
-            // 
-            // chatPartisipantBindingSource
-            // 
-            this.chatPartisipantBindingSource.DataSource = typeof(ChatLibrary.ChatPartisipant);
             // 
             // ShowServersButton
             // 
@@ -201,6 +187,10 @@
             this.sendPrivateMessageButton.UseVisualStyleBackColor = true;
             this.sendPrivateMessageButton.Click += new System.EventHandler(this.sendPrivateMessageButton_Click);
             // 
+            // chatPartisipantBindingSource
+            // 
+            this.chatPartisipantBindingSource.DataSource = typeof(ChatLibrary.ChatPartisipant);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -212,7 +202,6 @@
             this.Controls.Add(this.dialogsLabel);
             this.Controls.Add(this.sendButton);
             this.Controls.Add(this.messageTextBox);
-            this.Controls.Add(this.currentDialogLabel);
             this.Controls.Add(this.chatTextBox);
             this.Controls.Add(this.serversListBox);
             this.Controls.Add(this.serverListLabel);
@@ -224,6 +213,7 @@
             this.Controls.Add(this.nicknameTextBox);
             this.Name = "MainForm";
             this.Text = "Чат";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.colorPictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chatPartisipantBindingSource)).EndInit();
             this.ResumeLayout(false);
@@ -243,7 +233,6 @@
         private System.Windows.Forms.Label serverListLabel;
         public System.Windows.Forms.ListBox serversListBox;
         private System.Windows.Forms.TextBox chatTextBox;
-        private System.Windows.Forms.Label currentDialogLabel;
         public System.Windows.Forms.TextBox messageTextBox;
         private System.Windows.Forms.Button sendButton;
         private System.Windows.Forms.Label dialogsLabel;

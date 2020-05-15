@@ -139,6 +139,36 @@ namespace ChatServer
                 PrivateMessage privateMessage = (PrivateMessage)message;
                 SendMessageToClient(privateMessage, privateMessage.recipientID);
             }
+
+            if (message is DisconnectionMessage)
+            {
+                string nickname = "";
+
+                DisconnectionMessage disconnectionMessage = (DisconnectionMessage)message;
+                foreach(ConnectedClient connectedClient in clientsList)
+                {
+                    if (connectedClient.id == disconnectionMessage.ClientID)
+                    {
+                        clientsList.Remove(connectedClient);
+                        break;
+                    }
+                        
+                }
+
+                foreach(ChatPartisipant chatPartisipant in chatPartisipants)
+                {
+                    if (chatPartisipant.id == disconnectionMessage.ClientID)
+                    {
+                        nickname = chatPartisipant.nickname;
+                        chatPartisipants.Remove(chatPartisipant);
+                        break;
+                    }
+                }
+
+                Console.WriteLine("[" + DateTime.Now.ToString() + "]: Пользователь " + nickname + " отключился.");
+                string text = "Пользователь " + nickname + " отключился.";
+                SendMessageToAllClients(new ClientsListUpdateMessage(DateTime.Now, NetworkInformation.GetCurrrentHostIp().ToString(), serverPort, text, chatPartisipants));
+            }
         }
 
         public void SendMessageToClient(Message message, int id)
@@ -163,7 +193,7 @@ namespace ChatServer
                 chatPartisipants.Add(new ChatPartisipant(ConnectionMessage.ClientNickname, clientID));
                 Console.WriteLine("[" + DateTime.Now.ToString() + "]: Пользователь " + ConnectionMessage.ClientNickname + " присоединился.");
                 string text = "Пользователь " + ConnectionMessage.ClientNickname + " присоединился.";
-                HistoryMessage historyMessage = new HistoryMessage(DateTime.Now, NetworkInformation.GetCurrrentHostIp().ToString(), serverPort, messagesHistory);
+                HistoryMessage historyMessage = new HistoryMessage(DateTime.Now, NetworkInformation.GetCurrrentHostIp().ToString(), serverPort, messagesHistory, clientID);
                 connectedClient.tcpSocket.Send(messageSerializer.Serialize(historyMessage));
                 SendMessageToAllClients(new ClientsListUpdateMessage(DateTime.Now, NetworkInformation.GetCurrrentHostIp().ToString(), serverPort, text, chatPartisipants));
                 
