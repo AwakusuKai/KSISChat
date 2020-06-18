@@ -87,6 +87,10 @@
       <Project>{424e15ac-366a-42f8-a209-40af9e91f2c3}</Project>
       <Name>ChatLibrary</Name>
     </ProjectReference>
+    <ProjectReference Include="..\FileTransferLibrary\FileTransferLibrary.csproj">
+      <Project>{86a359e6-4f94-4d8c-9598-3b4c3564770e}</Project>
+      <Name>FileTransferLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

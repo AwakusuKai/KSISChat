@@ -16,5 +16,7 @@ namespace ChatLibrary
             MessageText = messageText;
             SenderNickname = senderNickName;
         }
+
+        public override string ToString() { return SendTime.ToString("h:mm tt") + " " + SenderNickname + ": " + MessageText; }
     }
 }

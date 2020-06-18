@@ -18,5 +18,7 @@ namespace ChatLibrary
             SenderNickname = senderNickName;
             this.recipientID = recipientID;
         }
+
+        public override string ToString() { return SendTime.ToString("h:mm tt") + " " + SenderNickname + "[ЧАСТНО]" + ": " + MessageText; }
     }
 }

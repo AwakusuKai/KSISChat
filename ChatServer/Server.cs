@@ -53,6 +53,7 @@ namespace ChatServer
             tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             IPEndPoint localUdpIp = new IPEndPoint(IPAddress.Any, serverPort);
             IPEndPoint localTcpIp = new IPEndPoint(NetworkInformation.GetCurrrentHostIp(), serverPort);
+            Console.WriteLine(localTcpIp.ToString());
             try
             {
                 udpSocket.Bind(localUdpIp);
@@ -109,7 +110,7 @@ namespace ChatServer
                         }
                         while (udpSocket.Available > 0);
                         if (receivedDataBytesCount > 0)  
-                            HandleTCPMessage(messageSerializer.Deserialize(memoryStream.ToArray()), connectedSocket);
+                            HandleConnectionMessage(messageSerializer.Deserialize(memoryStream.ToArray()), connectedSocket);
                     }
                 }
                 catch (Exception ex)
@@ -180,21 +181,24 @@ namespace ChatServer
             }
         }
 
-        public void HandleTCPMessage(Message message, Socket connectedSocket) //обработчик сообщений
+        public void HandleConnectionMessage(Message message, Socket connectedSocket) //обработчик сообщений
         {
             if (message is ConnectionMessage)
             {
                 ConnectionMessage ConnectionMessage = (ConnectionMessage)message;
                 int clientID = GetClientID();
+
                 ConnectedClient connectedClient = new ConnectedClient(ConnectionMessage.ClientNickname, clientID, connectedSocket, messageSerializer);
                 connectedClient.ReceiveMessageEvent += HandleReceivedMessage;
                 clientsList.Add(connectedClient);
                 connectedClient.StartListenTcp();
+
                 chatPartisipants.Add(new ChatPartisipant(ConnectionMessage.ClientNickname, clientID));
                 Console.WriteLine("[" + DateTime.Now.ToString() + "]: Пользователь " + ConnectionMessage.ClientNickname + " присоединился.");
                 string text = "Пользователь " + ConnectionMessage.ClientNickname + " присоединился.";
                 HistoryMessage historyMessage = new HistoryMessage(DateTime.Now, NetworkInformation.GetCurrrentHostIp().ToString(), serverPort, messagesHistory, clientID);
                 connectedClient.tcpSocket.Send(messageSerializer.Serialize(historyMessage));
+
                 SendMessageToAllClients(new ClientsListUpdateMessage(DateTime.Now, NetworkInformation.GetCurrrentHostIp().ToString(), serverPort, text, chatPartisipants));
                 
             }  

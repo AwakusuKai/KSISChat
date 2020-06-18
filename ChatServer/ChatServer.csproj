@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ChatLibrary\ChatLibrary.csproj" />
+    <ProjectReference Include="..\FileTransferLibrary\FileTransferLibrary.csproj" />
   </ItemGroup>
 
 </Project>
