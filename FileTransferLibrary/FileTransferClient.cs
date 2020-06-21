@@ -262,6 +262,7 @@ namespace FileTransferLibrary
 
         private async Task<DownloadFile> GetDownloadFileByResponse(HttpResponseMessage response)
         {
+           
             var downloadFileStream = await response.Content.ReadAsStreamAsync();
             var downloadFileBytes = new byte[downloadFileStream.Length];
             downloadFileStream.Read(downloadFileBytes, 0, downloadFileBytes.Length);

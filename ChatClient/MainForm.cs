@@ -165,14 +165,36 @@ namespace ChatClient
 
         private void sendButton_Click(object sender, EventArgs e)
         {
-            client.SendCommonMessage(messageTextBox.Text);
+            if (attachedFilesListBox.Items.Count == 0)
+            {
+                client.SendCommonMessage(messageTextBox.Text);
+            }
+            else
+            {
+                client.SendCommonFileMessage(messageTextBox.Text, FileTransferClient.filesToSendDictionary);
+                FileTransferClient.totalFilesToLoadSize = 0;
+                FileTransferClient.filesToSendDictionary.Clear();
+                attachedFilesListBox.Items.Clear();
+            }
             messageTextBox.Clear();
         }
 
        private void sendPrivateMessageButton_Click(object sender, EventArgs e)
         {
-            ChatPartisipant recipient = (ChatPartisipant)dialogsListBox.Items[dialogsListBox.SelectedIndex];
-            client.SendPrivateMessage(messageTextBox.Text, recipient.id);
+            if (attachedFilesListBox.Items.Count == 0)
+            {
+                ChatPartisipant recipient = (ChatPartisipant)dialogsListBox.Items[dialogsListBox.SelectedIndex];
+                client.SendPrivateMessage(messageTextBox.Text, recipient.id);
+                messageTextBox.Clear();
+            }
+            else
+            {
+                ChatPartisipant recipient = (ChatPartisipant)dialogsListBox.Items[dialogsListBox.SelectedIndex];
+                client.SendPrivateFileMessage(messageTextBox.Text, recipient.id, FileTransferClient.filesToSendDictionary);
+                FileTransferClient.totalFilesToLoadSize = 0;
+                FileTransferClient.filesToSendDictionary.Clear();
+                attachedFilesListBox.Items.Clear();
+            }
             messageTextBox.Clear();
         }
 
@@ -281,17 +303,43 @@ namespace ChatClient
 
         private Dictionary<int, string> GetFilesByMessageIndex()
         {
-            Message message = (Message)messagesListBox.SelectedItem;
+            try
+            {
+                Message message = (Message)messagesListBox.SelectedItem;
 
-            if (message is FileCommonMessage)
-            {
-                return (((FileCommonMessage)message).Files);
+                if (message is FileCommonMessage)
+                {
+                    return (((FileCommonMessage)message).Files);
+                }
+                if (message is FilePrivateMessage)
+                {
+                    return (((FilePrivateMessage)message).Files);
+                }
+                return null;
             }
-            if (message is FilePrivateMessage)
+            catch (Exception)
             {
-                return (((FilePrivateMessage)message).Files);
+                return null;
             }
-            return null;
-        }       
+            
+        }
+
+        private void messagesListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var files = GetFilesByMessageIndex();
+            if (files != null)
+            {
+                ShowFiles(files);
+            }
+        }
+
+        private void ShowFiles(Dictionary<int, string> files)
+        {
+            messageFileListBox.Items.Clear();
+            foreach (var file in files)
+            {
+                messageFileListBox.Items.Add(file.Value);
+            }
+        }
     }
 }

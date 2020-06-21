@@ -45,12 +45,12 @@
             this.ShowServersButton = new System.Windows.Forms.Button();
             this.sendPrivateMessageButton = new System.Windows.Forms.Button();
             this.messagesListBox = new System.Windows.Forms.ListBox();
-            this.chatPartisipantBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.attachedFilesListBox = new System.Windows.Forms.ListBox();
             this.deleteFileButton = new System.Windows.Forms.Button();
             this.addFileButton = new System.Windows.Forms.Button();
             this.messageFileListBox = new System.Windows.Forms.ListBox();
             this.buttonDownload = new System.Windows.Forms.Button();
+            this.chatPartisipantBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.colorPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chatPartisipantBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -190,10 +190,7 @@
             this.messagesListBox.Name = "messagesListBox";
             this.messagesListBox.Size = new System.Drawing.Size(425, 160);
             this.messagesListBox.TabIndex = 16;
-            // 
-            // chatPartisipantBindingSource
-            // 
-            this.chatPartisipantBindingSource.DataSource = typeof(ChatLibrary.ChatPartisipant);
+            this.messagesListBox.SelectedIndexChanged += new System.EventHandler(this.messagesListBox_SelectedIndexChanged);
             // 
             // attachedFilesListBox
             // 
@@ -240,6 +237,10 @@
             this.buttonDownload.Text = "Скачать";
             this.buttonDownload.UseVisualStyleBackColor = true;
             this.buttonDownload.Click += new System.EventHandler(this.buttonDownload_Click);
+            // 
+            // chatPartisipantBindingSource
+            // 
+            this.chatPartisipantBindingSource.DataSource = typeof(ChatLibrary.ChatPartisipant);
             // 
             // MainForm
             // 

@@ -201,6 +201,8 @@ namespace ChatClient
             SendMessage(privateMessage);
         }
 
+
+
         public void SendMessage(Message message)
         {
             tcpSocket.Send(messageSerializer.Serialize(message));
@@ -210,6 +212,49 @@ namespace ChatClient
         {
             IPEndPoint clientIp = (IPEndPoint)(tcpSocket.LocalEndPoint);
             return new ConnectionMessage(DateTime.Now, clientIp.Address.ToString(), clientIp.Port, clientName);
+        }
+
+        public void SendCommonFileMessage(string content, Dictionary<int, string> filesToLoad)
+        {
+            var files = GetCopyOfLoadedFilesDictionary(filesToLoad);
+            tcpSocket.Send(messageSerializer.Serialize(GetFileCommonMessage(content, files)));
+        }
+
+        private FilePrivateMessage GetPrivateFileMessage(string content, int receiverId, Dictionary<int, string> files)
+        {
+            IPEndPoint clientIp = (IPEndPoint)(tcpSocket.LocalEndPoint);
+            return new FilePrivateMessage(DateTime.Now, clientIp.Address.ToString(), clientIp.Port, content, Nickname, receiverId, files);
+        }
+
+        public void SendPrivateFileMessage(string content, int resipientID, Dictionary<int, string> filesToLoad)
+        {
+            var files = GetCopyOfLoadedFilesDictionary(filesToLoad);            
+            var fileIndividualMessage = GetPrivateFileMessage(content, resipientID, files);
+            tcpSocket.Send(messageSerializer.Serialize(fileIndividualMessage));       
+        }
+
+
+
+        private FilePrivateMessage GetFilePrivateMessage(string content, int receiverId, Dictionary<int, string> files)
+        {
+            IPEndPoint clientIp = (IPEndPoint)(tcpSocket.LocalEndPoint);
+            return new FilePrivateMessage(DateTime.Now, clientIp.Address.ToString(), clientIp.Port, content, Nickname, receiverId, files);
+        }
+
+        private Dictionary<int, string> GetCopyOfLoadedFilesDictionary(Dictionary<int, string> filesToLoad)
+        {
+            Dictionary<int, string> files = new Dictionary<int, string>();
+            foreach (var file in filesToLoad)
+            {
+                files.Add(file.Key, file.Value);
+            }
+            return files;
+        }
+
+        private FileCommonMessage GetFileCommonMessage(string content, Dictionary<int, string> filesToLoad)
+        {
+            IPEndPoint clientIp = (IPEndPoint)(tcpSocket.LocalEndPoint);
+            return new FileCommonMessage(DateTime.Now, clientIp.Address.ToString(), clientIp.Port, content, Nickname, filesToLoad);
         }
 
     }
